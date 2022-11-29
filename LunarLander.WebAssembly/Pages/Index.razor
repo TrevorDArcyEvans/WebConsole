@@ -1,0 +1,46 @@
+﻿@page "/"
+
+@using global::Blzr.Console;
+@using Microsoft.Extensions.Logging;
+
+@inject ILogger<App> _logger
+
+<style>
+  code, input
+  {
+    color: limegreen;
+    background-color: black;
+  }
+</style>
+
+<PageTitle>Lunar Lander</PageTitle>
+
+<p>
+  <div style="background: black">
+    <Blzr.Console.BlazorConsole
+      @ref="_console"
+      Name="Lunar Lander"
+      ShowRepositoryUrl="false"
+      AutoScroll="false"
+      SetAutoFocusToConsoleInput="false"
+      UseOriginalSystemConsole="false"/>
+  </div>
+</p>
+
+@code
+{
+  BlazorConsole _console;
+
+  protected override Task OnAfterRenderAsync(bool firstRender)
+  {
+    InvokeAsync(Rocket.Lunar.StartAsync).ContinueWith(a =>
+    {
+      if (a.Exception != null)
+      {
+        _logger.LogError(a.Exception, nameof(Rocket.Lunar.StartAsync));
+      }
+    });
+
+    return base.OnAfterRenderAsync(firstRender);
+  }
+}
