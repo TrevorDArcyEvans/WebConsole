@@ -1,7 +1,7 @@
 ﻿@page "/"
 
-@using global::Blzr.Console;
 @using Microsoft.Extensions.Logging;
+@using WebConsole
 
 @inject ILogger<App> _logger
 
@@ -17,7 +17,7 @@
 
 <p>
   <div style="background: black">
-    <Blzr.Console.BlazorConsole
+    <BlazorConsole
       @ref="_console"
       Name="Lunar Lander"
       ShowRepositoryUrl="false"
