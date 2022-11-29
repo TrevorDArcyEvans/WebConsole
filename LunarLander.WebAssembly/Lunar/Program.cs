@@ -1,10 +1,12 @@
-﻿using static System.Math;
-using console = Console.Extensions.Console;
+﻿using WebConsole;
+using static System.Math;
 
 namespace Rocket // Original name
 {
   public class Lunar // Name used for later versions in BASIC
   {
+    static BlazorConsole console = BlazorConsole.ActiveConsole;
+    
     static decimal altitude; //altitude
     static decimal velocity; //vessel speed
     static decimal mass; //vessel mass
@@ -31,7 +33,7 @@ namespace Rocket // Original name
 
       // Set up what little we can
       // NOTE:  a *lot* of things are not supported in a browser :-(
-      console.Clear();
+      Console.Clear();
       // End window setup
 
       // Print header on the screen.
@@ -85,7 +87,7 @@ namespace Rocket // Original name
 
         do
         {
-          string input = await console.ReadLineAsync();
+          string input = await console.ReadLine();
           try
           {
             burn = decimal.Parse(input);
@@ -227,7 +229,7 @@ namespace Rocket // Original name
       while (true)
       {
         console.Write("(ANS. YES OR NO)");
-        string p = await console.ReadLineAsync();
+        string p = await console.ReadLine();
         if (p.ToUpper() == "NO")
         {
           gameover = true;
