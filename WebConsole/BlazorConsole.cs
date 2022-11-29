@@ -39,12 +39,12 @@ public sealed class BlazorConsole
   public int CursorLeft { get; private set; }
   public int CursorTop { get; private set; }
 
-  public string Title { get; set; }
+  public string Title { get; set; } = string.Empty;
   public ConsoleColor BackgroundColor { get; set; } = ConsoleColor.Black;
   public ConsoleColor ForegroundColor { get; set; } = ConsoleColor.White;
   public bool CursorVisible { get; set; } = true;
 
-  public Action TriggerRefresh { get; set; }
+  public Action TriggerRefresh { get; set; } = () => { };
 
   private readonly Queue<ConsoleKeyInfo> _inputBuffer = new();
   private bool _refreshOnInputOnly = true;
