@@ -120,8 +120,8 @@ public sealed class BlazorConsole
   {
     var c = key switch
     {
-      >= ConsoleKey.A and <= ConsoleKey.Z => (char)(key - ConsoleKey.A + 'a'),
-      >= ConsoleKey.D0 and <= ConsoleKey.D9 => (char)(key - ConsoleKey.D0 + '0'),
+      >= ConsoleKey.A and <= ConsoleKey.Z => (char) (key - ConsoleKey.A + 'a'),
+      >= ConsoleKey.D0 and <= ConsoleKey.D9 => (char) (key - ConsoleKey.D0 + '0'),
       ConsoleKey.Enter => '\n',
       ConsoleKey.Backspace => '\b',
       ConsoleKey.OemPeriod => '.',
@@ -309,7 +309,7 @@ public sealed class BlazorConsole
 
       var state = stateBuilder.ToString();
       _stateHasChanged = false;
-      return (MarkupString)state;
+      return (MarkupString) state;
     }
   }
 
