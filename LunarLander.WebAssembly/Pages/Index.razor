@@ -1,12 +1,13 @@
 ﻿@page "/"
 
 @using Microsoft.Extensions.Logging;
+@using Rocket
 @using WebConsole
 
 @inject ILogger<App> _logger
 
 <style>
-  code, input
+  code, input, pre
   {
     color: limegreen;
     background-color: black;
@@ -16,31 +17,24 @@
 <PageTitle>Lunar Lander</PageTitle>
 
 <p>
-  <div style="background: black">
-    <BlazorConsole
-      @ref="_console"
-      Name="Lunar Lander"
-      ShowRepositoryUrl="false"
-      AutoScroll="false"
-      SetAutoFocusToConsoleInput="false"
-      UseOriginalSystemConsole="false"/>
+  <div @onkeydown="@_console.OnKeyDown" tabindex="0">
+    <pre>
+      <code>@_console.State</code>
+    </pre>
   </div>
 </p>
 
 @code
 {
-  BlazorConsole _console;
+  private Lunar _game;
+  private BlazorConsole _console;
 
-  protected override Task OnAfterRenderAsync(bool firstRender)
+  public Index()
   {
-    InvokeAsync(Rocket.Lunar.StartAsync).ContinueWith(a =>
-    {
-      if (a.Exception != null)
-      {
-        _logger.LogError(a.Exception, nameof(Rocket.Lunar.StartAsync));
-      }
-    });
-
-    return base.OnAfterRenderAsync(firstRender);
+    _game = new();
+    _console = Lunar.console;
+    _console.TriggerRefresh = StateHasChanged;
   }
+
+  protected override void OnInitialized() => InvokeAsync(Lunar.StartAsync);
 }

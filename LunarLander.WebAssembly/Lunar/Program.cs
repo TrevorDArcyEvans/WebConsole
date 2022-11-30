@@ -5,7 +5,7 @@ namespace Rocket // Original name
 {
   public class Lunar // Name used for later versions in BASIC
   {
-    static BlazorConsole console = BlazorConsole.ActiveConsole;
+    public static BlazorConsole console = BlazorConsole.ActiveConsole;
     
     static decimal altitude; //altitude
     static decimal velocity; //vessel speed
@@ -37,25 +37,25 @@ namespace Rocket // Original name
       // End window setup
 
       // Print header on the screen.
-      CenterPrint("LUNAR");
-      CenterPrint("Originally written for the DEC PDP-8 by Jim Storer, 1969");
-      CenterPrint("Ported to C# by Ted Thompson, 2017");
-      CenterPrint("Ported to C#+WebAssembly by Trevor D'Arcy-Evans, 2022");
-      console.WriteLine("======================================================================\n\n");
+      await CenterPrint("LUNAR");
+      await CenterPrint("Originally written for the DEC PDP-8 by Jim Storer, 1969");
+      await CenterPrint("Ported to C# by Ted Thompson, 2017");
+      await CenterPrint("Ported to C#+WebAssembly by Trevor D'Arcy-Evans, 2022");
+      await console.WriteLine("======================================================================\n\n");
 
       // 01.04
       //Start Port of Original Program
-      console.Write("CONTROL CALLING LUNAR MODULE. MANUAL CONTROL IS NECESSARY\n");
-      console.Write("YOU MAY RESET FUEL RATE K EACH 10 SECS TO 0 OR ANY VALUE\n");
-      console.Write("BETWEEN 8 & 200 LBS/SEC. YOU'VE 16000 LBS FUEL. ESTIMATED\n");
-      console.Write("FREE FALL IMPACT TIME-120 SECS. CAPSULE WEIGHT-32500 LBS\n");
+      await console.Write("CONTROL CALLING LUNAR MODULE. MANUAL CONTROL IS NECESSARY\n");
+      await console.Write("YOU MAY RESET FUEL RATE K EACH 10 SECS TO 0 OR ANY VALUE\n");
+      await console.Write("BETWEEN 8 & 200 LBS/SEC. YOU'VE 16000 LBS FUEL. ESTIMATED\n");
+      await console.Write("FREE FALL IMPACT TIME-120 SECS. CAPSULE WEIGHT-32500 LBS\n");
 
       do
       {
         await StartGame();
       } while (!gameover);
 
-      console.Write("CONTROL OUT\n\n\n*");
+      await console.Write("CONTROL OUT\n\n\n*");
     }
 
     private static async Task StartGame()
@@ -68,22 +68,22 @@ namespace Rocket // Original name
       // so I'm assuming it's absence was a bug.  Without this the time keeps
       // accumulating on subsequent play throughs.
 
-      console.Write("FIRST RADAR CHECK COMING UP\n\n\n");
-      console.Write("COMMENCE LANDING PROCEDURE\nTIME,SECS   ALTITUDE,");
-      console.Write("MILES+FEET   VELOCITY,MPH   FUEL,LBS   FUEL RATE\n");
+      await console.Write("FIRST RADAR CHECK COMING UP\n\n\n");
+      await console.Write("COMMENCE LANDING PROCEDURE\nTIME,SECS   ALTITUDE,");
+      await console.Write("MILES+FEET   VELOCITY,MPH   FUEL,LBS   FUEL RATE\n");
 
       while (true)
       {
         // Elapsed Time
-        console.Write($"{elapsed,8:F0}");
+        await console.Write($"{elapsed,8:F0}");
         // Altitude
-        console.Write($"{Truncate(altitude),15}{Truncate(5280 * (altitude - Truncate(altitude))),7}");
+        await console.Write($"{Truncate(altitude),15}{Truncate(5280 * (altitude - Truncate(altitude))),7}");
         // VSI
-        console.Write($"{3600 * velocity,15:F2}");
+        await console.Write($"{3600 * velocity,15:F2}");
         // Fuel
-        console.Write($"{mass - netmass,12:F1}");
+        await console.Write($"{mass - netmass,12:F1}");
         // Burn Setting Prompt
-        console.Write($"{"K=:",9}");
+        await console.Write($"{"K=:",9}");
 
         do
         {
@@ -99,13 +99,13 @@ namespace Rocket // Original name
 
           if ((burn != 0) && (burn < 8) || (burn > 200))
           {
-            console.Write("NOT POSSIBLE");
+            await console.Write("NOT POSSIBLE");
             for (tmpAlt = 1; tmpAlt < 52; tmpAlt++)
             {
-              console.Write(".");
+              await console.Write(".");
             }
 
-            console.Write("K=:");
+            await console.Write("K=:");
             burn = -1;
           }
         } while (burn == -1); // parse loop
@@ -189,15 +189,15 @@ namespace Rocket // Original name
 
       if (outtagas)
       {
-        console.Write($"FUEL OUT AT {elapsed,8:F2} SECS\n");
+        await console.Write($"FUEL OUT AT {elapsed,8:F2} SECS\n");
         step = ((decimal)Sqrt((double)velocity * (double)velocity + 2 * (double)altitude * (double)gravity) - velocity) / gravity;
         velocity = velocity + gravity * step;
         elapsed = elapsed + step;
       }
 
       velMPH = 3600 * velocity;
-      console.Write($"ON THE MOON AT {elapsed,8:F2} SECS\n");
-      console.Write($"IMPACT VELOCITY OF {velMPH,8:F2} M.P.H.\nFUEL LEFT:{mass - netmass,9:F2} LBS\n");
+      await console.Write($"ON THE MOON AT {elapsed,8:F2} SECS\n");
+      await console.Write($"IMPACT VELOCITY OF {velMPH,8:F2} M.P.H.\nFUEL LEFT:{mass - netmass,9:F2} LBS\n");
 
       if (velMPH <= 1)
       {
@@ -224,11 +224,11 @@ namespace Rocket // Original name
         outcome = $"SORRY,BUT THERE WERE NO SURVIVORS-YOU BLEW IT!\nIN FACT YOU BLASTED A NEW LUNAR CRATER{velMPH * .277777M,9:F2} FT. DEEP\n";
       }
 
-      console.WriteLine(outcome);
-      console.Write("\n\n\n\nTRY AGAIN?\n");
+      await console.WriteLine(outcome);
+      await console.Write("\n\n\n\nTRY AGAIN?\n");
       while (true)
       {
-        console.Write("(ANS. YES OR NO)");
+        await console.Write("(ANS. YES OR NO)");
         string p = await console.ReadLine();
         if (p.ToUpper() == "NO")
         {
@@ -274,23 +274,23 @@ namespace Rocket // Original name
     /// Print msg centered in window
     /// </summary>
     /// <param name="msg">String to print</param>
-    private static void CenterPrint(string msg)
+    private static async Task CenterPrint(string msg)
     {
       // Console.WindowWidth is not supported in a browser :-(
-      console.WriteLine($"{msg}");
+      await console.WriteLine($"{msg}");
     }
 
     // Print routine found at 02.72 of the original program to inform the player 
     // they made an invalid entry.
-    private static void TwoPointSevenTwo()
+    private static async Task TwoPointSevenTwo()
     {
-      console.Write("NOT POSSIBLE");
+      await console.Write("NOT POSSIBLE");
       for (int x = 1; x < 52; x++)
       {
-        console.Write(".");
+        await console.Write(".");
       }
 
-      console.Write("K=:");
+      await console.Write("K=:");
       return;
     }
   }
